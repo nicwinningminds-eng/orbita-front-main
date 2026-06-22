@@ -144,7 +144,6 @@ function renderTabela() {
         const status = normalizarStatus(demanda);
         const linha = document.createElement('tr');
         linha.innerHTML = `
-            <td>${demanda.id}</td>
             <td>${demanda.nome_cliente}</td>
             <td>${demanda.descricao || '-'}</td>
             <td>${criarBadgeStatus(status)}</td>
