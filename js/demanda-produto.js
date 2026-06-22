@@ -11,8 +11,12 @@ function setProdutosSelecionados(lista) {
 
 function montarProdutosParaDemanda() {
     return produtosSelecionados.map((item) => ({
-        id_produto: item.produtoId || item.id_produto || item.id,
+        produto_id: item.produtoId || item.id_produto || item.id,
         quantidade: Number(item.quantidade || 1),
+
+        // novos campos do backend (podem ser opcionais)
+        valor_unitario: item.valor_unitario || null,
+        observacao: item.observacao || null
     }));
 }
 
@@ -40,11 +44,17 @@ function atualizarTabelaProdutos() {
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${nomeProduto}</td>
-            <td>${item.quantidade}</td>
-            <td><button type="button" class="btn-remover-produto" onclick="removerProdutoSelecionado(${index})">Remover</button></td>
-        `;
-        tbody.appendChild(tr);
+    <td>${nomeProduto}</td>
+    <td>${item.quantidade}</td>
+    <td>${item.valor_unitario ?? '-'}</td>
+    <td>${item.observacao ?? '-'}</td>
+    <td>
+        <button type="button" class="btn-remover-produto"
+        onclick="removerProdutoSelecionado(${index})">
+            Remover
+        </button>
+    </td>
+`;
     });
 }
 
@@ -77,21 +87,23 @@ function adicionarProduto(event) {
     } else {
         produtosSelecionados.push({
             produtoId: produtoId,
-            quantidade,
+            quantidade: quantidade,
+            valor_unitario: null,
+            observacao: ''
         });
-    }
-
-    atualizarTabelaProdutos();
-    document.getElementById('form-produto').reset();
-    document.getElementById('produto-quantidade').value = '1';
-
-    const produtoModalEl = document.getElementById('produtoModal');
-    if (produtoModalEl && window.bootstrap) {
-        bootstrap.Modal.getOrCreateInstance(produtoModalEl).hide();
-    }
-
-    mostrarResultado('Produto adicionado com sucesso!');
+    };
 }
+
+atualizarTabelaProdutos();
+document.getElementById('form-produto').reset();
+document.getElementById('produto-quantidade').value = '1';
+
+const produtoModalEl = document.getElementById('produtoModal');
+if (produtoModalEl && window.bootstrap) {
+    bootstrap.Modal.getOrCreateInstance(produtoModalEl).hide();
+}
+
+mostrarResultado('Produto adicionado com sucesso!');
 
 function removerProdutoSelecionado(index) {
     produtosSelecionados.splice(index, 1);
